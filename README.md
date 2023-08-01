@@ -1,66 +1,119 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# livewire-3
+To begin your Livewire journey, we will create a simple "counter" component and render it in the browser. This example is a great way to experience Livewire for the first time as it demonstrates Livewire's liveness in the simplest way possible.
+Prerequisites
+Before we start, make sure you have the following installed:
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Laravel version 9 or later
+PHP version 8.1 or later
+#Install Livewire
 
-## About Laravel
+From the root directory of your Laravel app, run the following Composer command:
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+```composer require livewire/livewire "^3.0@beta"```
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Create a Livewire component
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+Livewire provides a convenient Artisan command to generate new components quickly. Run the following command to make a new Counter component:
 
-## Learning Laravel
+```php artisan make:livewire counter```
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+This command will generate two new files in your project:
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+``App/Livewire/Counter.php``
+``resources/views/livewire/counter.blade.php``
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 2000 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+#Writing the class
 
-## Laravel Sponsors
+Open app/Livewire/Counter.php and replace its contents with the following:
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+```<?php
+ 
+namespace App\Livewire;
+ 
+use Livewire\Component;
+ 
+class Counter extends Component
+{
+    public $count = 1;
+ 
+    public function increment()
+    {
+        $this->count++;
+    }
+ 
+    public function decrement()
+    {
+        $this->count--;
+    }
+ 
+    public function render()
+    {
+        return view('livewire.counter');
+    }
+}```
 
-### Premium Partners
+Here's a brief explanation of the code above:
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[OP.GG](https://op.gg)**
-- **[WebReinvent](https://webreinvent.com/?utm_source=laravel&utm_medium=github&utm_campaign=patreon-sponsors)**
-- **[Lendio](https://lendio.com)**
+public $count = 1; — Declares a public property named $count with an initial value of 1.
 
-## Contributing
+public function increment() — Declares a public method named increment() that increments the $count property each time it's called. Public methods like this can be triggered from the browser in a variety of ways, including when a user clicks a button.
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+public function render() — Declares a render() method that returns a Blade view. 
 
-## Code of Conduct
+This Blade view will contain the HTML template for our component.
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+#Writing the view
 
-## Security Vulnerabilities
+Open the resources/views/livewire/counter.blade.php file and replace its content with the following:
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+<div>
+    <h1>{{ $count }}</h1>
+ 
+    <button wire:click="increment">+</button>
+ 
+    <button wire:click="decrement">-</button>
+</div>
 
-## License
+This code will display the value of the $count property and two buttons that increment and decrement the $count property, respectively.
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+#Register a route for the component
+
+Open the routes/web.php file in your Laravel application and add the following code:
+
+use App\Livewire\Counter;
+ 
+Route::get('/counter', Counter::class);
+Now, our counter component is assigned to the /counter route, so that when a user visits the /counter endpoint in your application, this component will be rendered by the browser.
+
+#Create a template layout
+Before you can visit /counter in the browser, we need an HTML layout for our component to render inside. By default, Livewire will automatically look for a layout file named: resources/views/components/layouts/app.blade.php
+
+You may create this file if it doesn't already exist by running the following command:
+
+php artisan livewire:layout
+This command will generate a file called resources/views/components/layouts/app.blade.php with the following contents:
+
+<!DOCTYPE html>
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ 
+        <title>{{ $title ?? 'Page Title' }}</title>
+    </head>
+    <body>
+        {{ $slot }}
+    </body>
+</html>
+The counter component will be rendered in place of the $slot variable in the template above.
+
+You may have noticed there is no JavaScript or CSS assets provided by Livewire. That is because Livewire 3 and above automatically injects any frontend assets it needs.
+
+#Test it out
+With our component class and templates in place, our component is ready to test!
+
+Visit /counter in your browser, and you should see a number displayed on the screen with two buttons to increment and decrement the number.
+
+After clicking one of the buttons, you will notice that the count updates in real-time, without the page reloading. This is the magic of Livewire: dynamic frontend applications written entirely in PHP.
+
+We've barely scratched the surface of what Livewire is capable of. Keep reading the documentation to see everything Livewire has to offer.
